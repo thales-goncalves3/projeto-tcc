@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthController {
@@ -17,12 +15,13 @@ class AuthController {
 
   static login(String email, String password) async {
     try {
-      var result = await _auth.signInWithEmailAndPassword(email: email, password: password);
-
-      return !result.isNull;
-
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return true; // Autenticação bem-sucedida
+    } catch (error) {
+      return false; // Autenticação falhou, retorna false e a mensagem de erro
     }
   }
 
