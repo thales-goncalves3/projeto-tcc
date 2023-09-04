@@ -15,28 +15,25 @@ class AuthController {
 
   static login(String email, String password) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return true; // Autenticação bem-sucedida
+      return true;
     } catch (error) {
-      return false; // Autenticação falhou, retorna false e a mensagem de erro
+      return false;
     }
   }
 
-  static register(String email, String password) async {
+  static createuser(String email, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-
-      return true;
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return "The password provided is too weak.";
-      } else if (e.code == "email-already-in-use") {
-        return "The account already exist for that email.";
-      }
+
+      return e.message;
     }
   }
 }
