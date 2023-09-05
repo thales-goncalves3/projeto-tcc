@@ -46,7 +46,10 @@ dependencies:
   google_sign_in: ^6.1.4
   flutter_signin_button: ^2.0.0
   qr_flutter: ^4.1.0
-
+  uuid: ^4.0.0
+  qr_code_scanner: ^1.0.1
+  firebase_database: ^10.2.5
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

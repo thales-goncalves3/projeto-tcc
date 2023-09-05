@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:projeto_tcc/pages/quiz_page.dart';
+import 'package:projeto_tcc/pages/validate_quiz.dart';
 
 import '../controllers/auth_controller.dart';
-import 'login_page.dart';
 
 class PartnerPage extends StatefulWidget {
   const PartnerPage({super.key});
@@ -28,29 +27,24 @@ class _PartnerPageState extends State<PartnerPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-                width: 200,
-                height: 200,
-                child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateQuizPage(),
-                          ));
-                    },
-                    child: const Text("Criar desconto"))),
-          ),
-          IconButton(
+          TextButton(
               onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const LoginPage(),
-                ));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateQuizPage(),
+                    ));
               },
-              icon: const Icon(Icons.exit_to_app))
+              child: const Text("Criar desconto")),
+          TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ValidateQuiz(),
+                    ));
+              },
+              child: const Text("Validar quiz"))
         ],
       ),
       body: StreamBuilder(

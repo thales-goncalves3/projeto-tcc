@@ -39,8 +39,14 @@ class _UserPageState extends State<UserPage> {
           } else if (snapshot.hasData) {
             List<QueryDocumentSnapshot> quizList = snapshot.data!.docs;
 
+            List<Map<String, dynamic>> listaPerguntas = [];
+
+            for (var element in quizList) {
+              listaPerguntas.add(element.data() as Map<String, dynamic>);
+            }
+
             return ListView.builder(
-              itemCount: quizList.length,
+              itemCount: listaPerguntas.length,
               itemBuilder: (context, index) {
                 Map<String, dynamic> quizData =
                     quizList[index].data() as Map<String, dynamic>;
@@ -95,8 +101,7 @@ class _UserPageState extends State<UserPage> {
                                           ),
                                           const SizedBox(height: 10),
                                           Text(
-                                            quizData['perguntas'][index]
-                                                ['questao'],
+                                            listaPerguntas[index]['titulo'],
                                             style: const TextStyle(
                                               fontSize: 16,
                                             ),
@@ -123,15 +128,16 @@ class _UserPageState extends State<UserPage> {
                                           ),
                                           child: TextButton(
                                               onPressed: () {
+                                                quizData['userId'] =
+                                                    user['username'];
+
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           QrCodePage(
-                                                              userInfos: quizData[
-                                                                          'perguntas']
-                                                                      [index]
-                                                                  ['questao']),
+                                                              userInfos:
+                                                                  quizData),
                                                     ));
                                               },
                                               child:

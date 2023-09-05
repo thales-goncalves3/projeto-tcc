@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
 import 'package:projeto_tcc/pages/partner_page.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateQuizPage extends StatefulWidget {
   const CreateQuizPage({super.key});
@@ -78,6 +79,8 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
       });
     }
   }
+
+  var uuid = Uuid();
 
   @override
   Widget build(BuildContext context) {
@@ -262,6 +265,7 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                                                       'valorProduto':
                                                           valorDoProduto.text,
                                                       'titulo': titulo.text,
+                                                      'codigo': uuid.v1(),
                                                     });
 
                                                     Navigator.push(
