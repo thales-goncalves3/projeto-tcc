@@ -39,55 +39,66 @@ class _QrCodePageState extends State<QrCodePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gerar QR Code'),
-      ),
-      body: !validate
-          ? Center(
-              child: gera
-                  ? Column(
-                      children: [
-                        Text("Quiz criado por: ${widget.userInfos['userId']}"),
-                        Text(
-                            "Valor do produto: R\$${widget.userInfos['valorProduto']}"),
-                        Text(
-                            "Desconto aplicado: ${widget.userInfos['desconto']}%"),
-                        Text(
-                            "Valor Final: R\$${double.parse(widget.userInfos['valorProduto']) - (double.parse(widget.userInfos['valorProduto']) * (int.parse(widget.userInfos['desconto']) / 100))}"),
-                        TextButton(
-                          onPressed: () {
-                            final DatabaseReference databaseReference =
-                                FirebaseDatabase.instance
-                                    .ref()
-                                    .child("qrcodes");
+    return WillPopScope(
+      onWillPop: () async {
+        // final DatabaseReference databaseReference =
+        //     FirebaseDatabase.instance.ref().child("qrcodes");
 
-                            databaseReference
-                                .child(widget.userInfos['codigo'])
-                                .set({
-                              'validate': false,
-                            });
+        // await databaseReference.child(widget.userInfos['codigo']).remove();
 
-                            setState(() {
-                              gera = !gera;
-                            });
-                          },
-                          child: const Text("Gerar QrCode"),
-                        ),
-                      ],
-                    )
-                  : Center(
-                      child: Column(
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Gerar QR Code'),
+        ),
+        body: !validate
+            ? Center(
+                child: gera
+                    ? Column(
                         children: [
-                          QrImageView(
-                            data: widget.userInfos['codigo'],
-                            size: 300,
-                            version: QrVersions.auto,
+                          Text(
+                              "Quiz criado por: ${widget.userInfos['userId']}"),
+                          Text(
+                              "Valor do produto: R\$${widget.userInfos['valorProduto']}"),
+                          Text(
+                              "Desconto aplicado: ${widget.userInfos['desconto']}%"),
+                          Text(
+                              "Valor Final: R\$${double.parse(widget.userInfos['valorProduto']) - (double.parse(widget.userInfos['valorProduto']) * (int.parse(widget.userInfos['desconto']) / 100))}"),
+                          TextButton(
+                            onPressed: () async {
+                              final DatabaseReference databaseReference =
+                                  FirebaseDatabase.instance
+                                      .ref()
+                                      .child("qrcodes");
+
+                              await databaseReference
+                                  .child(widget.userInfos['codigo'])
+                                  .set({
+                                'validate': false,
+                              });
+
+                              setState(() {
+                                gera = !gera;
+                              });
+                            },
+                            child: const Text("Gerar QrCode"),
                           ),
                         ],
-                      ),
-                    ))
-          : const Text("deu certo"),
+                      )
+                    : Center(
+                        child: Column(
+                          children: [
+                            QrImageView(
+                              data: widget.userInfos['codigo'],
+                              size: 300,
+                              version: QrVersions.auto,
+                            ),
+                          ],
+                        ),
+                      ))
+            : const Text("deu certo"),
+      ),
     );
   }
 }
