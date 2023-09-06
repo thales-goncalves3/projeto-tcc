@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -30,8 +31,23 @@ class _ValidateQuizState extends State<ValidateQuiz> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
-          Expanded(child: QRView(key: qrKey, onQRViewCreated: _onQRViewCreated))
+        children: <Widget>[
+          Expanded(
+            flex: 5,
+            child: QRView(
+              key: qrKey,
+              onQRViewCreated: _onQRViewCreated,
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: (result != null)
+                  ? Text(
+                      'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                  : const Text('Scan a code'),
+            ),
+          )
         ],
       ),
     );
@@ -39,15 +55,23 @@ class _ValidateQuizState extends State<ValidateQuiz> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
       final DatabaseReference databaseReference = FirebaseDatabase.instance
           .ref()
           .child("qrcodes")
           .child(scanData.code.toString());
 
-      databaseReference.update({"validate": true});
+      await databaseReference.update({"validate": true});
 
-      print("TESTE -----------------------------${scanData.code} ");
+      setState(() {
+        result = scanData;
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 }
