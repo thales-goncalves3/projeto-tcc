@@ -510,7 +510,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     suffixIcon: IconButton(
                                       onPressed: () {
                                         setState(() {
-                                          visibilityConfirm = !visibilityConfirm;
+                                          visibilityConfirm =
+                                              !visibilityConfirm;
                                         });
                                       },
                                       icon: Icon(visibilityConfirm

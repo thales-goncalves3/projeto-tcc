@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
 import 'package:projeto_tcc/controllers/database_controller.dart';
 import 'package:projeto_tcc/pages/partner_page.dart';
@@ -21,131 +23,182 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController password = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey();
 
+  bool visibility = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Form(
-          key: formKey,
-          autovalidateMode: AutovalidateMode.disabled,
-          child: Center(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * .8,
-              width: MediaQuery.of(context).size.width * .8,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: email,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Email",
-                        labelText: "Email"),
-                  ),
-                  TextFormField(
-                    controller: password,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Password",
-                        labelText: "Password"),
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          final login = await AuthController.login(
-                              email.text, password.text);
+      body: Container(
+        color: Colors.grey[200],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              child: Form(
+                key: formKey,
+                autovalidateMode: AutovalidateMode.disabled,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Image.network(
+                        "https://cdn-icons-png.flaticon.com/512/5009/5009570.png",
+                        width: 100,
+                        height: 100,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 500,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: email,
+                          decoration: const InputDecoration(
+                            labelStyle: TextStyle(color: Colors.black),
+                            border: OutlineInputBorder(),
+                            hintText: "Email",
+                            labelText: "Email",
+                            prefixIcon: Icon(Icons.mail),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 500,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: password,
+                          obscureText: visibility,
+                          decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              hintText: "Senha",
+                              labelText: "Senha",
+                              prefixIcon: const Icon(Icons.lock),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    visibility = !visibility;
+                                  });
+                                },
+                                icon: visibility
+                                    ? const Icon(Icons.visibility_off)
+                                    : const Icon(Icons.visibility),
+                              )),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: AnimatedButton(
+                              animatedOn: AnimatedOn.onHover,
+                              height: 40,
+                              width: 130,
+                              text: "Entrar",
+                              isReverse: true,
+                              selectedTextColor: Colors.black,
+                              transitionType: TransitionType.LEFT_TO_RIGHT,
+                              backgroundColor: Colors.black,
+                              borderColor: Colors.white,
+                              borderRadius: 5,
+                              borderWidth: 2,
+                              onPress: () async {
+                                if (formKey.currentState!.validate()) {
+                                  final login = await AuthController.login(
+                                      email.text, password.text);
 
-                          if (login) {
-                            QuerySnapshot query =
-                                await DatabaseController.getUser();
-                            List<QueryDocumentSnapshot> documents = query.docs;
-                            var teste =
-                                documents[0].data() as Map<String, dynamic>;
-                            if (teste["partner"]) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const PartnerPage(),
-                                  ));
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const UserPage(),
-                                  ));
-                            }
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text("Email ou senha errado(s)"),
-                                  content: const Text("Não foi possivel logar"),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          email.clear();
-                                          password.clear();
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text("OK"))
-                                  ],
-                                );
+                                  if (login) {
+                                    QuerySnapshot query =
+                                        await DatabaseController.getUser();
+                                    List<QueryDocumentSnapshot> documents =
+                                        query.docs;
+                                    var teste = documents[0].data()
+                                        as Map<String, dynamic>;
+                                    if (teste["partner"]) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const PartnerPage(),
+                                          ));
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const UserPage(),
+                                          ));
+                                    }
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              "Email ou senha errado(s)"),
+                                          content: const Text(
+                                              "Não foi possivel logar"),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  email.clear();
+                                                  password.clear();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text("OK"))
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                }
                               },
-                            );
-                          }
-                        }
-                      },
-                      child: const Text("Entrar")),
-                  ElevatedButton(
-                    onPressed: () async {
-                      // final FirebaseAuth _auth = FirebaseAuth.instance;
-                      // final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-                      // Future<User?> signInWithGoogle() async {
-                      //   try {
-                      //     final GoogleSignInAccount? googleSignInAccount =
-                      //         await _googleSignIn.signIn();
-
-                      //     if (googleSignInAccount != null) {
-                      //       final GoogleSignInAuthentication
-                      //           googleSignInAuthentication =
-                      //           await googleSignInAccount.authentication;
-
-                      //       final AuthCredential credential =
-                      //           GoogleAuthProvider.credential(
-                      //         accessToken: googleSignInAuthentication.accessToken,
-                      //         idToken: googleSignInAuthentication.idToken,
-                      //       );
-
-                      //       final UserCredential authResult =
-                      //           await _auth.signInWithCredential(credential);
-                      //       final User? user = authResult.user;
-                      //       print(user);
-                      //       return user;
-                      //     }
-
-                      //     return null;
-                      //   } catch (e) {
-                      //     print(e.toString());
-                      //     return null;
-                      //   }
-                      // }
-                    },
-                    child: const Text("Entrar com o Google"),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
-                            ));
-                      },
-                      child: Text("Cadastrar"))
-                ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SignInButton(
+                              Buttons.Google,
+                              onPressed: () async {},
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: AnimatedButton(
+                              animatedOn: AnimatedOn.onHover,
+                              height: 40,
+                              width: 130,
+                              text: 'Cadastrar',
+                              isReverse: true,
+                              selectedTextColor: Colors.black,
+                              transitionType: TransitionType.LEFT_TO_RIGHT,
+                              backgroundColor: Colors.black,
+                              borderColor: Colors.white,
+                              borderRadius: 5,
+                              borderWidth: 2,
+                              onPress: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegisterPage(),
+                                    ));
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
