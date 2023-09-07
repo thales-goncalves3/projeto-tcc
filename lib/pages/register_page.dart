@@ -147,57 +147,64 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
-                  AnimatedButton(
-                    text: 'Criar conta',
-                    animatedOn: AnimatedOn.onHover,
-                    height: 40,
-                    width: 130,
-                    isReverse: true,
-                    selectedTextColor: Colors.black,
-                    transitionType: TransitionType.LEFT_TO_RIGHT,
-                    backgroundColor: Colors.black,
-                    borderColor: Colors.white,
-                    borderRadius: 5,
-                    borderWidth: 2,
-                    onPress: () async {
-                      if (formKey.currentState!.validate()) {
-                        var result = await AuthController.createuser(
-                            email.text, password.text);
+                  Center(
+                    child: Column(
+                      children: [
+                        AnimatedButton(
+                          text: 'Criar conta',
+                          animatedOn: AnimatedOn.onHover,
+                          height: 40,
+                          width: 130,
+                          isReverse: true,
+                          selectedTextColor: Colors.black,
+                          transitionType: TransitionType.LEFT_TO_RIGHT,
+                          backgroundColor: Colors.black,
+                          borderColor: Colors.white,
+                          borderRadius: 5,
+                          borderWidth: 2,
+                          onPress: () async {
+                            if (formKey.currentState!.validate()) {
+                              var result = await AuthController.createuser(
+                                  email.text, password.text);
 
-                        if (result == null) {
-                          DatabaseController.createUser(
-                              username.text, email.text, checkboxValue);
+                              if (result == null) {
+                                DatabaseController.createUser(
+                                    username.text, email.text, checkboxValue);
 
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Usuário Criado")));
-                        } else {
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(result.toString())));
-                        }
-                      }
-                    },
-                  ),
-                  AnimatedButton(
-                    text: 'Login',
-                    animatedOn: AnimatedOn.onHover,
-                    height: 40,
-                    width: 130,
-                    isReverse: true,
-                    selectedTextColor: Colors.black,
-                    transitionType: TransitionType.LEFT_TO_RIGHT,
-                    backgroundColor: Colors.black,
-                    borderColor: Colors.white,
-                    borderRadius: 5,
-                    borderWidth: 2,
-                    onPress: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ));
-                    },
+                                // ignore: use_build_context_synchronously
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("Usuário Criado")));
+                              } else {
+                                // ignore: use_build_context_synchronously
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(result.toString())));
+                              }
+                            }
+                          },
+                        ),
+                        AnimatedButton(
+                          text: 'Login',
+                          animatedOn: AnimatedOn.onHover,
+                          height: 40,
+                          width: 130,
+                          isReverse: true,
+                          selectedTextColor: Colors.black,
+                          transitionType: TransitionType.LEFT_TO_RIGHT,
+                          backgroundColor: Colors.black,
+                          borderColor: Colors.white,
+                          borderRadius: 5,
+                          borderWidth: 2,
+                          onPress: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginPage(),
+                                ));
+                          },
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
