@@ -34,168 +34,165 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              child: Form(
-                key: formKey,
-                autovalidateMode: AutovalidateMode.disabled,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Image.network(
-                        "https://cdn-icons-png.flaticon.com/512/5009/5009570.png",
-                        width: 100,
-                        height: 100,
-                      ),
+            Form(
+              key: formKey,
+              autovalidateMode: AutovalidateMode.disabled,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Image.network(
+                      "https://cdn-icons-png.flaticon.com/512/5009/5009570.png",
+                      width: 100,
+                      height: 100,
                     ),
-                    SizedBox(
-                      width: 500,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: email,
-                          decoration: const InputDecoration(
-                            labelStyle: TextStyle(color: Colors.black),
-                            border: OutlineInputBorder(),
-                            hintText: "Email",
-                            labelText: "Email",
-                            prefixIcon: Icon(Icons.mail),
-                          ),
+                  ),
+                  SizedBox(
+                    width: 500,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: email,
+                        decoration: const InputDecoration(
+                          labelStyle: TextStyle(color: Colors.black),
+                          border: OutlineInputBorder(),
+                          hintText: "Email",
+                          labelText: "Email",
+                          prefixIcon: Icon(Icons.mail),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 500,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: password,
-                          obscureText: visibility,
-                          decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              hintText: "Senha",
-                              labelText: "Senha",
-                              prefixIcon: const Icon(Icons.lock),
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    visibility = !visibility;
-                                  });
-                                },
-                                icon: visibility
-                                    ? const Icon(Icons.visibility_off)
-                                    : const Icon(Icons.visibility),
-                              )),
-                        ),
+                  ),
+                  SizedBox(
+                    width: 500,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: password,
+                        obscureText: visibility,
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            hintText: "Senha",
+                            labelText: "Senha",
+                            prefixIcon: const Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  visibility = !visibility;
+                                });
+                              },
+                              icon: visibility
+                                  ? const Icon(Icons.visibility_off)
+                                  : const Icon(Icons.visibility),
+                            )),
                       ),
                     ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AnimatedButton(
-                              animatedOn: AnimatedOn.onHover,
-                              height: 40,
-                              width: 130,
-                              text: "Entrar",
-                              isReverse: true,
-                              selectedTextColor: Colors.black,
-                              transitionType: TransitionType.LEFT_TO_RIGHT,
-                              backgroundColor: Colors.black,
-                              borderColor: Colors.white,
-                              borderRadius: 5,
-                              borderWidth: 2,
-                              onPress: () async {
-                                if (formKey.currentState!.validate()) {
-                                  final login = await AuthController.login(
-                                      email.text, password.text);
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AnimatedButton(
+                            animatedOn: AnimatedOn.onHover,
+                            height: 40,
+                            width: 130,
+                            text: "Entrar",
+                            isReverse: true,
+                            selectedTextColor: Colors.black,
+                            transitionType: TransitionType.LEFT_TO_RIGHT,
+                            backgroundColor: Colors.black,
+                            borderColor: Colors.white,
+                            borderRadius: 5,
+                            borderWidth: 2,
+                            onPress: () async {
+                              if (formKey.currentState!.validate()) {
+                                final login = await AuthController.login(
+                                    email.text, password.text);
 
-                                  if (login) {
-                                    QuerySnapshot query =
-                                        await DatabaseController.getUser();
-                                    List<QueryDocumentSnapshot> documents =
-                                        query.docs;
-                                    var teste = documents[0].data()
-                                        as Map<String, dynamic>;
-                                    if (teste["partner"]) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PartnerPage(),
-                                          ));
-                                    } else {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const UserPage(),
-                                          ));
-                                    }
+                                if (login) {
+                                  QuerySnapshot query =
+                                      await DatabaseController.getUser();
+                                  List<QueryDocumentSnapshot> documents =
+                                      query.docs;
+                                  var teste = documents[0].data()
+                                      as Map<String, dynamic>;
+                                  if (teste["partner"]) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const PartnerPage(),
+                                        ));
                                   } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                              "Email ou senha errado(s)"),
-                                          content: const Text(
-                                              "Não foi possivel logar"),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  email.clear();
-                                                  password.clear();
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: const Text("OK"))
-                                          ],
-                                        );
-                                      },
-                                    );
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const UserPage(),
+                                        ));
                                   }
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            "Email ou senha errado(s)"),
+                                        content: const Text(
+                                            "Não foi possivel logar"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                email.clear();
+                                                password.clear();
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("OK"))
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
-                              },
-                            ),
+                              }
+                            },
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SignInButton(
-                              Buttons.Google,
-                              onPressed: () async {},
-                            ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SignInButton(
+                            Buttons.Google,
+                            onPressed: () async {},
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AnimatedButton(
-                              animatedOn: AnimatedOn.onHover,
-                              height: 40,
-                              width: 130,
-                              text: 'Cadastrar',
-                              isReverse: true,
-                              selectedTextColor: Colors.black,
-                              transitionType: TransitionType.LEFT_TO_RIGHT,
-                              backgroundColor: Colors.black,
-                              borderColor: Colors.white,
-                              borderRadius: 5,
-                              borderWidth: 2,
-                              onPress: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RegisterPage(),
-                                    ));
-                              },
-                            ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AnimatedButton(
+                            text: 'Cadastrar',
+                            animatedOn: AnimatedOn.onHover,
+                            height: 40,
+                            width: 200,
+                            isReverse: true,
+                            selectedTextColor: Colors.black,
+                            transitionType: TransitionType.LEFT_TO_RIGHT,
+                            backgroundColor: Colors.black,
+                            borderColor: Colors.white,
+                            borderRadius: 5,
+                            borderWidth: 2,
+                            onPress: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const RegisterPage(),
+                                  ));
+                            },
                           ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
           ],
