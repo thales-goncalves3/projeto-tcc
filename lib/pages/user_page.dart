@@ -39,8 +39,6 @@ class _UserPageState extends State<UserPage> {
           } else if (snapshot.hasData) {
             List<QueryDocumentSnapshot> quizList = snapshot.data!.docs;
 
-            print(quizList);
-
             List<Map<String, dynamic>> listaPerguntas = [];
 
             for (var element in quizList) {

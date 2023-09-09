@@ -17,7 +17,7 @@ class _PartnerPageState extends State<PartnerPage> {
   Stream<QuerySnapshot> getQuiz() {
     Stream<QuerySnapshot> quizStream = FirebaseFirestore.instance
         .collection('quizzes')
-        .where('userId', isEqualTo: AuthController.getUserId())
+        .where('creatorUserId', isEqualTo: AuthController.getUserId())
         .snapshots();
     return quizStream;
   }
