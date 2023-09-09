@@ -80,7 +80,7 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
     }
   }
 
-  var uuid = Uuid();
+  var uuid = const Uuid();
 
   @override
   Widget build(BuildContext context) {
@@ -258,8 +258,9 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                                                     FirebaseFirestore.instance
                                                         .collection('quizzes')
                                                         .add({
-                                                      'userId': AuthController
-                                                          .getUserId(),
+                                                      'creatorUserId':
+                                                          AuthController
+                                                              .getUserId(),
                                                       'perguntas': quizData,
                                                       'desconto': desconto.text,
                                                       'valorProduto':

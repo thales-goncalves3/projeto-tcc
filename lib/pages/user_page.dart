@@ -39,6 +39,8 @@ class _UserPageState extends State<UserPage> {
           } else if (snapshot.hasData) {
             List<QueryDocumentSnapshot> quizList = snapshot.data!.docs;
 
+            print(quizList);
+
             List<Map<String, dynamic>> listaPerguntas = [];
 
             for (var element in quizList) {
@@ -54,7 +56,7 @@ class _UserPageState extends State<UserPage> {
                 getUserInfo() {
                   final teste = FirebaseFirestore.instance
                       .collection('users')
-                      .doc(quizData['userId'])
+                      .doc(quizData['creatorUserId'])
                       .collection('infos')
                       .snapshots();
 
@@ -128,7 +130,7 @@ class _UserPageState extends State<UserPage> {
                                           ),
                                           child: TextButton(
                                               onPressed: () {
-                                                quizData['userId'] =
+                                                quizData['quizCreator'] =
                                                     user['username'];
 
                                                 Navigator.push(

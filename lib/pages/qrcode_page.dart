@@ -49,56 +49,81 @@ class _QrCodePageState extends State<QrCodePage> {
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Gerar QR Code'),
-        ),
-        body: !validate
-            ? Center(
-                child: gera
-                    ? Column(
-                        children: [
-                          Text(
-                              "Quiz criado por: ${widget.userInfos['userId']}"),
-                          Text(
-                              "Valor do produto: R\$${widget.userInfos['valorProduto']}"),
-                          Text(
-                              "Desconto aplicado: ${widget.userInfos['desconto']}%"),
-                          Text(
-                              "Valor Final: R\$${double.parse(widget.userInfos['valorProduto']) - (double.parse(widget.userInfos['valorProduto']) * (int.parse(widget.userInfos['desconto']) / 100))}"),
-                          TextButton(
-                            onPressed: () async {
-                              final DatabaseReference databaseReference =
-                                  FirebaseDatabase.instance
-                                      .ref()
-                                      .child("qrcodes");
-
-                              await databaseReference
-                                  .child(widget.userInfos['codigo'])
-                                  .set({
-                                'validate': false,
-                              });
-
-                              setState(() {
-                                gera = !gera;
-                              });
-                            },
-                            child: const Text("Gerar QrCode"),
-                          ),
-                        ],
-                      )
-                    : Center(
-                        child: Column(
+          appBar: AppBar(
+            title: const Text('Gerar QR Code'),
+          ),
+          body: !validate
+              ? Center(
+                  child: gera
+                      ? Column(
                           children: [
-                            QrImageView(
-                              data: widget.userInfos['codigo'],
-                              size: 300,
-                              version: QrVersions.auto,
+                            Text(
+                                "Quiz criado por: ${widget.userInfos['userId']}"),
+                            Text(
+                                "Valor do produto: R\$${widget.userInfos['valorProduto']}"),
+                            Text(
+                                "Desconto aplicado: ${widget.userInfos['desconto']}%"),
+                            Text(
+                                "Valor Final: R\$${double.parse(widget.userInfos['valorProduto']) - (double.parse(widget.userInfos['valorProduto']) * (int.parse(widget.userInfos['desconto']) / 100))}"),
+                            TextButton(
+                              onPressed: () async {
+                                final DatabaseReference databaseReference =
+                                    FirebaseDatabase.instance
+                                        .ref()
+                                        .child("qrcodes");
+
+                                await databaseReference
+                                    .child(widget.userInfos['codigo'])
+                                    .set({
+                                  'validate': false,
+                                  'teste': widget.userInfos
+                                });
+
+                                print(widget.userInfos['codigo']);
+
+                                setState(() {
+                                  gera = !gera;
+                                });
+                              },
+                              child: const Text("Gerar QrCode"),
                             ),
                           ],
-                        ),
-                      ))
-            : const Text("deu certo"),
-      ),
+                        )
+                      : Center(
+                          child: Column(
+                            children: [
+                              QrImageView(
+                                data: widget.userInfos['codigo'],
+                                size: 300,
+                                version: QrVersions.auto,
+                              ),
+                            ],
+                          ),
+                        ))
+              : ListView.builder(
+                  itemCount: widget.userInfos['perguntas'].length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Text(
+                            "Primeira pergunta: ${widget.userInfos['perguntas'][index]['questao']}"),
+                        Column(
+                          children: [
+                            for (var item in widget.userInfos['perguntas']
+                                [index]['opcao'])
+                              CheckboxListTile(
+                                title: Text(item.toString()),
+                                value: false,
+                                onChanged: (newValue) {
+                                  setState(() {});
+                                },
+                              )
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                )),
     );
   }
 }

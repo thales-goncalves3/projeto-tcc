@@ -46,6 +46,14 @@ class _LoginPageState extends State<LoginPage> {
                       height: 100,
                     ),
                   ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "QuizBarganha",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w900, fontSize: 26),
+                    ),
+                  ),
                   SizedBox(
                     width: 500,
                     child: Padding(
@@ -132,6 +140,8 @@ class _LoginPageState extends State<LoginPage> {
                                               const UserPage(),
                                         ));
                                   }
+                                  email.clear();
+                                  password.clear();
                                 } else {
                                   showDialog(
                                     context: context,

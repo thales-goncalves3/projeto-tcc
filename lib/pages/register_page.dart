@@ -3,6 +3,7 @@ import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:projeto_tcc/controllers/database_controller.dart';
 
 import 'package:projeto_tcc/pages/login_page.dart';
+import 'package:string_validator/string_validator.dart';
 
 import '../controllers/auth_controller.dart';
 
@@ -49,6 +50,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 100,
                     ),
                   ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "QuizBarganha",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w900, fontSize: 26),
+                    ),
+                  ),
                   SizedBox(
                     width: 500,
                     child: Padding(
@@ -70,6 +79,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Esse campo é obrigatório";
+                          }
+
+                          if (!isEmail(value)) {
+                            return "Esse campo deve ser do tipo email";
+                          }
+
+                          return null;
+                        },
                         controller: email,
                         decoration: const InputDecoration(
                           labelStyle: TextStyle(color: Colors.black),
@@ -86,6 +106,18 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
+                        onChanged: (value) => passwordChanged = value,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Esse campo é obrigatório";
+                          }
+
+                          if (passwordChanged.length < 8) {
+                            return "A senha deve conter 8 ou mais digitos";
+                          }
+
+                          return null;
+                        },
                         controller: password,
                         obscureText: visibility,
                         decoration: InputDecoration(
