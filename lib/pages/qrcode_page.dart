@@ -19,6 +19,7 @@ class _QrCodePageState extends State<QrCodePage> {
   bool gera = true;
   bool validate = false;
   int countPergunta = 0;
+  bool enviar = false;
   List<bool> marcarOpcoes = [];
   List<Color> colorOptions = [
     Colors.grey[200]!,
@@ -26,6 +27,9 @@ class _QrCodePageState extends State<QrCodePage> {
     Colors.grey[200]!
   ];
   int selectedOption = -1;
+  bool travarRadioBox = false;
+  int respostasCorretas = 0;
+  bool enviarResultado = false;
 
   @override
   void initState() {
@@ -116,6 +120,7 @@ class _QrCodePageState extends State<QrCodePage> {
                         ),
                       ))
             : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     "Pergunta: ${widget.userInfos['perguntas'][countPergunta]['questao']}",
@@ -133,34 +138,61 @@ class _QrCodePageState extends State<QrCodePage> {
                         ),
                         value: index,
                         groupValue: selectedOption,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedOption = value!;
-                          });
-                        },
+                        onChanged: travarRadioBox
+                            ? null
+                            : (value) {
+                                setState(() {
+                                  selectedOption = value!;
+                                });
+                              },
                       ),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      print(selectedOption);
-                      setState(() {
-                        if (countPergunta <
-                            widget.userInfos['perguntas'].length - 1) {
-                          if (widget.userInfos['perguntas'][countPergunta]
-                                  ['correta'] ==
-                              selectedOption) {
-                            colorOptions[selectedOption] = Colors.green[100]!;
-                          } else {
-                            colorOptions[selectedOption] = Colors.red[100]!;
-                          }
-                          countPergunta++;
-                          selectedOption = -1;
-                        }
-                      });
-                    },
-                    child: const Text("Confirmar"),
-                  ),
+                  !enviar
+                      ? ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              if (widget.userInfos['perguntas'][countPergunta]
+                                      ['correta'] ==
+                                  selectedOption) {
+                                colorOptions[selectedOption] =
+                                    Colors.green[100]!;
+
+                                respostasCorretas++;
+                              } else {
+                                colorOptions[selectedOption] = Colors.red[100]!;
+                              }
+                              enviar = !enviar;
+                            });
+                          },
+                          child: const Text("Confirmar"),
+                        )
+                      : ElevatedButton(
+                          child: const Text("Próxima pergunta"),
+                          onPressed: () {
+                            setState(() {
+                              if (countPergunta <
+                                  widget.userInfos['perguntas'].length - 1) {
+                                countPergunta++;
+                                colorOptions[selectedOption] =
+                                    Colors.grey[200]!;
+                                selectedOption = -1;
+                                enviar = false;
+                              } else {
+                                travarRadioBox = true;
+                                enviarResultado = true;
+                              }
+                            });
+                          },
+                        ),
+                  enviarResultado
+                      ? Column(
+                          children: [
+                            Text(
+                                "Resultado: $respostasCorretas / ${widget.userInfos['perguntas'].length}"),
+                          ],
+                        )
+                      : const SizedBox(),
                 ],
               ),
       ),
