@@ -179,6 +179,32 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    width: 500,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            activeColor: Colors.black,
+                            value: checkboxValue,
+                            onChanged: (value) {
+                              setState(() {
+                                checkboxValue = value!;
+                                print(checkboxValue);
+                              });
+                            },
+                          ),
+                          const Text(
+                            "Quero ser parceiro",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 16),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                   Center(
                     child: Column(
                       children: [
