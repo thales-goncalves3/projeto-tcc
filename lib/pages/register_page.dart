@@ -192,7 +192,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             onChanged: (value) {
                               setState(() {
                                 checkboxValue = value!;
-                                print(checkboxValue);
                               });
                             },
                           ),

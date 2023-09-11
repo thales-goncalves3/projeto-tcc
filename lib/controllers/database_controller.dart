@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
 
 class DatabaseController {
-  DatabaseController._(); 
+  DatabaseController._();
 
-  static Future<QuerySnapshot<Map<String, dynamic>>> getUser() async{
+  static Future<QuerySnapshot<Map<String, dynamic>>> getUser() async {
     return await FirebaseFirestore.instance
         .collection("users")
         .doc(AuthController.getUserId())
@@ -23,6 +23,4 @@ class DatabaseController {
       'partner': partner,
     });
   }
-
-  
 }

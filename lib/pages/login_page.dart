@@ -1,9 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
 import 'package:projeto_tcc/controllers/database_controller.dart';
 import 'package:projeto_tcc/pages/partner_page.dart';
@@ -172,7 +175,40 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: SignInButton(
                             Buttons.Google,
-                            onPressed: () async {},
+                            onPressed: () async {
+                              GoogleAuthProvider googleProvider =
+                                  GoogleAuthProvider();
+                              googleProvider.setCustomParameters(
+                                  {'login_hint': 'user@example.com'});
+
+                              await FirebaseAuth.instance
+                                  .signInWithPopup(googleProvider);
+
+                              if (FirebaseAuth.instance.currentUser != null) {
+                                final user = FirebaseAuth.instance.currentUser;
+
+                                final db = FirebaseFirestore.instance;
+
+                                final docRef = db
+                                    .collection("users")
+                                    .doc(user!.uid)
+                                    .collection("infos");
+
+                                docRef.get().then((doc) => {
+                                      if (doc.docs.isEmpty)
+                                        {
+                                          DatabaseController.createUser(
+                                              user.displayName.toString(),
+                                              user.email.toString(),
+                                              false)
+                                        }
+                                    });
+
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const UserPage(),
+                                ));
+                              }
+                            },
                           ),
                         ),
                         Padding(
