@@ -78,7 +78,7 @@ class _QrCodePageState extends State<QrCodePage> {
                     ? Column(
                         children: [
                           Text(
-                              "Quiz criado por: ${widget.userInfos['userId']}"),
+                              "Quiz criado por: ${widget.userInfos['creatorUserId']}"),
                           Text(
                               "Valor do produto: R\$${widget.userInfos['valorProduto']}"),
                           Text(

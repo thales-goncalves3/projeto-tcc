@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:projeto_tcc/pages/login_page.dart';
 import 'package:projeto_tcc/pages/quiz_page.dart';
 import 'package:projeto_tcc/pages/validate_quiz.dart';
 
@@ -26,7 +28,9 @@ class _PartnerPageState extends State<PartnerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
+          TextButton(onPressed: () {}, child: const Text("Editar Perfil")),
           TextButton(
               onPressed: () {
                 Navigator.push(
@@ -44,7 +48,20 @@ class _PartnerPageState extends State<PartnerPage> {
                       builder: (context) => const ValidateQuiz(),
                     ));
               },
-              child: const Text("Validar quiz"))
+              child: const Text("Validar quiz")),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ));
+                },
+                icon: const Icon(Icons.exit_to_app)),
+          )
         ],
       ),
       body: Container(

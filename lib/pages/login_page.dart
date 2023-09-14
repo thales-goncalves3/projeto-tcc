@@ -296,7 +296,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .sendPasswordResetEmail(
                                       email: emailConfirmacao.text);
                             } catch (e) {
-                              print("Error sending password reset email: $e");
+                              SnackBar(content: Text(e.toString()));
                             }
 
                             emailConfirmacao.clear();
@@ -305,7 +305,28 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           },
                         ),
-                      )
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AnimatedButton(
+                          text: "Voltar",
+                          animatedOn: AnimatedOn.onHover,
+                          height: 40,
+                          width: 200,
+                          isReverse: true,
+                          selectedTextColor: Colors.black,
+                          transitionType: TransitionType.LEFT_TO_RIGHT,
+                          backgroundColor: Colors.black,
+                          borderColor: Colors.white,
+                          borderRadius: 5,
+                          borderWidth: 2,
+                          onPress: () async {
+                            setState(() {
+                              esqueceuASenha = !esqueceuASenha;
+                            });
+                          },
+                        ),
+                      ),
                     ],
                   ),
           ],
