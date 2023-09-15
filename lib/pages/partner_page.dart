@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:projeto_tcc/pages/login_page.dart';
@@ -164,6 +165,32 @@ class _PartnerPageState extends State<PartnerPage> {
                                         "Desconto a ser aplicado: ${listaPerguntas[index]['desconto']}%"),
                                     Text(
                                         "Valor final: R\$ ${(double.parse(listaPerguntas[index]['valorProduto']) - (double.parse(listaPerguntas[index]['valorProduto']) * (int.parse(listaPerguntas[index]['desconto']) / 100))).toString()}"),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                          onPressed: () async {
+                                            var valorParaExcluir =
+                                                listaPerguntas[index]['codigo'];
+
+                                            QuerySnapshot querySnapshot =
+                                                await FirebaseFirestore.instance
+                                                    .collection("quizzes")
+                                                    .where("codigo",
+                                                        isEqualTo:
+                                                            valorParaExcluir)
+                                                    .get();
+
+                                            if (querySnapshot.docs.isNotEmpty) {
+                                              var idDoDocumentoParaExcluir =
+                                                  querySnapshot.docs[0].id;
+                                              await FirebaseFirestore.instance
+                                                  .collection("quizzes")
+                                                  .doc(idDoDocumentoParaExcluir)
+                                                  .delete();
+                                            }
+                                          },
+                                          child: const Text("Finalizar")),
+                                    )
                                   ],
                                 ),
                               ),
