@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:projeto_tcc/pages/editprofile_page.dart';
 import 'package:projeto_tcc/pages/login_page.dart';
 import 'package:projeto_tcc/pages/quiz_page.dart';
 import 'package:projeto_tcc/pages/validate_quiz.dart';
@@ -29,9 +29,18 @@ class _PartnerPageState extends State<PartnerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Quiz Barganha"),
         automaticallyImplyLeading: false,
         actions: [
-          TextButton(onPressed: () {}, child: const Text("Editar Perfil")),
+          TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfile(),
+                    ));
+              },
+              child: const Text("Editar Perfil")),
           TextButton(
               onPressed: () {
                 Navigator.push(
@@ -169,25 +178,63 @@ class _PartnerPageState extends State<PartnerPage> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: ElevatedButton(
                                           onPressed: () async {
-                                            var valorParaExcluir =
-                                                listaPerguntas[index]['codigo'];
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      "Excluir Quiz"),
+                                                  content: const Text(
+                                                      "Tem certeza que deseja excluir esse quiz?"),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child:
+                                                            const Text("Não")),
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          var valorParaExcluir =
+                                                              listaPerguntas[
+                                                                      index]
+                                                                  ['codigo'];
 
-                                            QuerySnapshot querySnapshot =
-                                                await FirebaseFirestore.instance
-                                                    .collection("quizzes")
-                                                    .where("codigo",
-                                                        isEqualTo:
-                                                            valorParaExcluir)
-                                                    .get();
+                                                          QuerySnapshot
+                                                              querySnapshot =
+                                                              await FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "quizzes")
+                                                                  .where(
+                                                                      "codigo",
+                                                                      isEqualTo:
+                                                                          valorParaExcluir)
+                                                                  .limit(
+                                                                      1) // Limita a consulta a um único resultado
+                                                                  .get();
 
-                                            if (querySnapshot.docs.isNotEmpty) {
-                                              var idDoDocumentoParaExcluir =
-                                                  querySnapshot.docs[0].id;
-                                              await FirebaseFirestore.instance
-                                                  .collection("quizzes")
-                                                  .doc(idDoDocumentoParaExcluir)
-                                                  .delete();
-                                            }
+                                                          if (querySnapshot.docs
+                                                              .isNotEmpty) {
+                                                            var documentoParaExcluir =
+                                                                querySnapshot
+                                                                    .docs.first;
+                                                            await documentoParaExcluir
+                                                                .reference
+                                                                .delete();
+                                                            // ignore: use_build_context_synchronously
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          }
+                                                        },
+                                                        child:
+                                                            const Text("Sim"))
+                                                  ],
+                                                );
+                                              },
+                                            );
                                           },
                                           child: const Text("Finalizar")),
                                     )
