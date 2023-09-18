@@ -22,6 +22,7 @@ class _PartnerPageState extends State<PartnerPage> {
         .collection('quizzes')
         .where('creatorUserId', isEqualTo: AuthController.getUserId())
         .snapshots();
+
     return quizStream;
   }
 

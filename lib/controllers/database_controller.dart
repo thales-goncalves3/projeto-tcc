@@ -17,7 +17,8 @@ class DatabaseController {
         .collection("users")
         .doc(AuthController.getUserId())
         .collection("infos")
-        .add({
+        .doc(AuthController.getUserId())
+        .set({
       'username': username,
       'email': email,
       'partner': partner,
