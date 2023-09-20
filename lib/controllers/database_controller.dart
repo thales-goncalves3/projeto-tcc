@@ -4,24 +4,63 @@ import 'package:projeto_tcc/controllers/auth_controller.dart';
 class DatabaseController {
   DatabaseController._();
 
-  static Future<QuerySnapshot<Map<String, dynamic>>> getUser() async {
-    return await FirebaseFirestore.instance
+  static Future<bool> isPartner() async {
+    final userId = AuthController.getUserId();
+
+    if (userId != null) {
+      final userDocument = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userId)
+          .get();
+
+      if (userDocument.exists) {
+        final userData = userDocument.data();
+
+        final partner = userData!['partner'];
+
+        return partner;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  static Future<List<QueryDocumentSnapshot>> getAllUsers() async {
+    try {
+      final usersQuerySnapshot =
+          await FirebaseFirestore.instance.collection("users").get();
+
+      if (usersQuerySnapshot.docs.isNotEmpty) {
+        return usersQuerySnapshot.docs;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      return [];
+    }
+  }
+
+  static Stream<List<QueryDocumentSnapshot>> getUsersStream() {
+    return FirebaseFirestore.instance
         .collection("users")
-        .doc(AuthController.getUserId())
-        .collection("infos")
-        .get();
+        .where('partner', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 
   static createUser(String username, String email, bool partner) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(AuthController.getUserId())
-        .collection("infos")
-        .doc(AuthController.getUserId())
         .set({
       'username': username,
       'email': email,
       'partner': partner,
+      'urlPhoto': '',
+      'description': 'ainda não tem uma descrição',
+      'uuid': AuthController.getUserId()
     });
   }
 }

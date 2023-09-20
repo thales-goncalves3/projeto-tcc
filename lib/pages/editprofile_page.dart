@@ -16,13 +16,11 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  Stream<QuerySnapshot> getUser() {
-    Stream<QuerySnapshot> userStream = FirebaseFirestore.instance
+  Stream<DocumentSnapshot> getUser() {
+    Stream<DocumentSnapshot> userStream = FirebaseFirestore.instance
         .collection("users")
         .doc(AuthController.getUserId())
-        .collection("infos")
         .snapshots();
-
     return userStream;
   }
 
@@ -49,8 +47,7 @@ class _EditProfileState extends State<EditProfile> {
         }
 
         if (snapshot.hasData) {
-          var dadosDoUser =
-              snapshot.data!.docs[0].data() as Map<String, dynamic>;
+          var dadosDoUser = snapshot.data!.data() as Map<String, dynamic>;
 
           return Scaffold(
             backgroundColor: Colors.grey[300],
@@ -94,8 +91,6 @@ class _EditProfileState extends State<EditProfile> {
                                     if (usuarioController.text.isNotEmpty) {
                                       await FirebaseFirestore.instance
                                           .collection("users")
-                                          .doc(AuthController.getUserId())
-                                          .collection("infos")
                                           .doc(AuthController.getUserId())
                                           .update({
                                         'username': usuarioController.text
@@ -154,8 +149,6 @@ class _EditProfileState extends State<EditProfile> {
                                       await FirebaseFirestore.instance
                                           .collection("users")
                                           .doc(AuthController.getUserId())
-                                          .collection("infos")
-                                          .doc(AuthController.getUserId())
                                           .update({
                                         'description': descricaoController.text
                                       });
@@ -211,8 +204,6 @@ class _EditProfileState extends State<EditProfile> {
 
                                           await FirebaseFirestore.instance
                                               .collection("users")
-                                              .doc(AuthController.getUserId())
-                                              .collection("infos")
                                               .doc(AuthController.getUserId())
                                               .update({'urlPhoto': urlPhoto});
                                         } catch (e) {

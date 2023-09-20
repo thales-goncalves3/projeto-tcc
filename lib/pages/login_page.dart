@@ -125,13 +125,11 @@ class _LoginPageState extends State<LoginPage> {
                                           email.text, password.text);
 
                                       if (login) {
-                                        QuerySnapshot query =
-                                            await DatabaseController.getUser();
-                                        List<QueryDocumentSnapshot> documents =
-                                            query.docs;
-                                        var teste = documents[0].data()
-                                            as Map<String, dynamic>;
-                                        if (teste["partner"]) {
+                                        bool isPartner =
+                                            await DatabaseController
+                                                .isPartner();
+
+                                        if (isPartner) {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
