@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto_tcc/pages/partner_page.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ValidateQuiz extends StatefulWidget {
@@ -30,42 +32,79 @@ class _ValidateQuizState extends State<ValidateQuiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
+      body: result != null
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Quiz Validado",
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const PartnerPage(),
+                      ));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 30),
+                    ),
+                    child: const Text(
+                      "Voltar",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )
+                ],
+              ),
+            )
+          : Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 5,
+                  child: QRView(
+                    key: qrKey,
+                    onQRViewCreated: _onQRViewCreated,
+                  ),
+                ),
+                const SizedBox(
+                    height: 30,
+                    child: Center(
+                        child: Text(
+                      "Lendo QRCODE",
+                      style: TextStyle(color: Colors.white),
+                    )))
+              ],
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: (result != null)
-                  ? Text(
-                      'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  : const Text('Scan a code'),
-            ),
-          )
-        ],
-      ),
     );
   }
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) async {
-      final DatabaseReference databaseReference = FirebaseDatabase.instance
-          .ref()
-          .child("qrcodes")
-          .child(scanData.code.toString());
+      if (scanData.code != null) {
+        try {
+          final DatabaseReference databaseReference = FirebaseDatabase.instance
+              .ref()
+              .child("qrcodes")
+              .child(scanData.code.toString());
 
-      await databaseReference.update({"validate": true});
+          print("=>>>>>>>>>> ${scanData.code}");
 
-      setState(() {
-        result = scanData;
-      });
+          await databaseReference.update({"validate": true});
+
+          setState(() {
+            result = scanData;
+          });
+        } catch (e) {
+          print('Erro ao acessar os valores: $e');
+        }
+      }
     });
   }
 

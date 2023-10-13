@@ -27,10 +27,35 @@ class DatabaseController {
     }
   }
 
+  static getScore() async {
+    var infos = await getUserInfos();
+
+    return infos['score'] ?? 0;
+  }
+
+  static getUserInfos() async {
+    var uuid = await AuthController.getUserId();
+
+    var infos =
+        await FirebaseFirestore.instance.collection("users").doc(uuid).get();
+
+    var data = infos.data() as Map<String, dynamic>;
+
+    return data;
+  }
+
+  static getUsername(uuid) async {
+    var infos = await getUserInfos();
+
+    return infos['username'];
+  }
+
   static Future<List<QueryDocumentSnapshot>> getAllUsers() async {
     try {
-      final usersQuerySnapshot =
-          await FirebaseFirestore.instance.collection("users").get();
+      final usersQuerySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .where("partner", isEqualTo: false)
+          .get();
 
       if (usersQuerySnapshot.docs.isNotEmpty) {
         return usersQuerySnapshot.docs;
@@ -60,7 +85,8 @@ class DatabaseController {
       'partner': partner,
       'urlPhoto': '',
       'description': 'ainda não tem uma descrição',
-      'uuid': AuthController.getUserId()
+      'uuid': AuthController.getUserId(),
+      'score': 0
     });
   }
 }

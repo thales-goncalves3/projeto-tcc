@@ -37,297 +37,313 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         color: Colors.grey[200],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Image.network(
-                "https://cdn-icons-png.flaticon.com/512/5009/5009570.png",
-                width: 100,
-                height: 100,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                "QuizBarganha",
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 26),
-              ),
-            ),
-            !esqueceuASenha
-                ? Form(
-                    key: formKey,
-                    autovalidateMode: AutovalidateMode.disabled,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: 500,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              controller: email,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(color: Colors.black),
-                                border: OutlineInputBorder(),
-                                hintText: "Email",
-                                labelText: "Email",
-                                prefixIcon: Icon(Icons.mail),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 500,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              controller: password,
-                              obscureText: visibility,
-                              decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  hintText: "Senha",
-                                  labelText: "Senha",
-                                  prefixIcon: const Icon(Icons.lock),
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        visibility = !visibility;
-                                      });
-                                    },
-                                    icon: visibility
-                                        ? const Icon(Icons.visibility_off)
-                                        : const Icon(Icons.visibility),
-                                  )),
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: AnimatedButton(
-                                  animatedOn: AnimatedOn.onHover,
-                                  height: 40,
-                                  width: 130,
-                                  text: "Entrar",
-                                  isReverse: true,
-                                  selectedTextColor: Colors.black,
-                                  transitionType: TransitionType.LEFT_TO_RIGHT,
-                                  backgroundColor: Colors.black,
-                                  borderColor: Colors.white,
-                                  borderRadius: 5,
-                                  borderWidth: 2,
-                                  onPress: () async {
-                                    if (formKey.currentState!.validate()) {
-                                      final login = await AuthController.login(
-                                          email.text, password.text);
-
-                                      if (login) {
-                                        bool isPartner =
-                                            await DatabaseController
-                                                .isPartner();
-
-                                        if (isPartner) {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const PartnerPage(),
-                                              ));
-                                        } else {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const UserPage(),
-                                              ));
-                                        }
-                                        email.clear();
-                                        password.clear();
-                                      } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: const Text(
-                                                  "Email ou senha errado(s)"),
-                                              content: const Text(
-                                                  "Não foi possivel logar"),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      email.clear();
-                                                      password.clear();
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: const Text("OK"))
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      }
-                                    }
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SignInButton(
-                                  Buttons.Google,
-                                  onPressed: () async {
-                                    GoogleAuthProvider googleProvider =
-                                        GoogleAuthProvider();
-                                    googleProvider.setCustomParameters(
-                                        {'login_hint': 'user@example.com'});
-
-                                    await FirebaseAuth.instance
-                                        .signInWithPopup(googleProvider);
-
-                                    if (FirebaseAuth.instance.currentUser !=
-                                        null) {
-                                      final user =
-                                          FirebaseAuth.instance.currentUser;
-
-                                      final db = FirebaseFirestore.instance;
-
-                                      final docRef = db
-                                          .collection("users")
-                                          .doc(user!.uid)
-                                          .collection("infos");
-
-                                      docRef.get().then((doc) => {
-                                            if (doc.docs.isEmpty)
-                                              {
-                                                DatabaseController.createUser(
-                                                    user.displayName.toString(),
-                                                    user.email.toString(),
-                                                    false)
-                                              }
-                                          });
-
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) => const UserPage(),
-                                      ));
-                                    }
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        esqueceuASenha = !esqueceuASenha;
-                                      });
-                                    },
-                                    child: const Text("Esqueceu a senha?")),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: AnimatedButton(
-                                  text: 'Cadastrar',
-                                  animatedOn: AnimatedOn.onHover,
-                                  height: 40,
-                                  width: 200,
-                                  isReverse: true,
-                                  selectedTextColor: Colors.black,
-                                  transitionType: TransitionType.LEFT_TO_RIGHT,
-                                  backgroundColor: Colors.black,
-                                  borderColor: Colors.white,
-                                  borderRadius: 5,
-                                  borderWidth: 2,
-                                  onPress: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const RegisterPage(),
-                                        ));
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                : Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          width: 500,
-                          child: TextFormField(
-                            controller: emailConfirmacao,
-                            decoration: const InputDecoration(
-                              labelStyle: TextStyle(color: Colors.black),
-                              border: OutlineInputBorder(),
-                              hintText: "Email de recuperação",
-                              labelText: "Email de recuperação",
-                              prefixIcon: Icon(Icons.mail),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: AnimatedButton(
-                          text: "Enviar",
-                          animatedOn: AnimatedOn.onHover,
-                          height: 40,
-                          width: 200,
-                          isReverse: true,
-                          selectedTextColor: Colors.black,
-                          transitionType: TransitionType.LEFT_TO_RIGHT,
-                          backgroundColor: Colors.black,
-                          borderColor: Colors.white,
-                          borderRadius: 5,
-                          borderWidth: 2,
-                          onPress: () async {
-                            try {
-                              await FirebaseAuth.instance
-                                  .sendPasswordResetEmail(
-                                      email: emailConfirmacao.text);
-                            } catch (e) {
-                              SnackBar(content: Text(e.toString()));
-                            }
-
-                            emailConfirmacao.clear();
-                            setState(() {
-                              esqueceuASenha = !esqueceuASenha;
-                            });
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: AnimatedButton(
-                          text: "Voltar",
-                          animatedOn: AnimatedOn.onHover,
-                          height: 40,
-                          width: 200,
-                          isReverse: true,
-                          selectedTextColor: Colors.black,
-                          transitionType: TransitionType.LEFT_TO_RIGHT,
-                          backgroundColor: Colors.black,
-                          borderColor: Colors.white,
-                          borderRadius: 5,
-                          borderWidth: 2,
-                          onPress: () async {
-                            setState(() {
-                              esqueceuASenha = !esqueceuASenha;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    "lib/assets/desconto-icon-preto.png",
+                    width: 100,
+                    height: 100,
                   ),
-          ],
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "Quiz Barganha",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 26,
+                    ),
+                  ),
+                ),
+                !esqueceuASenha
+                    ? Form(
+                        key: formKey,
+                        autovalidateMode: AutovalidateMode.disabled,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 500,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  controller: email,
+                                  decoration: const InputDecoration(
+                                    labelStyle: TextStyle(color: Colors.black),
+                                    border: OutlineInputBorder(),
+                                    hintText: "Email",
+                                    labelText: "Email",
+                                    prefixIcon: Icon(
+                                      Icons.mail,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 500,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  controller: password,
+                                  obscureText: visibility,
+                                  decoration: InputDecoration(
+                                      labelStyle:
+                                          const TextStyle(color: Colors.black),
+                                      border: const OutlineInputBorder(),
+                                      hintText: "Senha",
+                                      labelText: "Senha",
+                                      prefixIcon: const Icon(Icons.lock,
+                                          color: Colors.black),
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            visibility = !visibility;
+                                          });
+                                        },
+                                        icon: visibility
+                                            ? const Icon(Icons.visibility_off,
+                                                color: Colors.black)
+                                            : const Icon(Icons.visibility,
+                                                color: Colors.black),
+                                      )),
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.grey[300],
+                                          minimumSize: const Size(200, 60),
+                                        ),
+                                        onPressed: () async {
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            final login =
+                                                await AuthController.login(
+                                                    email.text, password.text);
+
+                                            if (login) {
+                                              bool isPartner =
+                                                  await DatabaseController
+                                                      .isPartner();
+
+                                              if (isPartner) {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const PartnerPage(),
+                                                    ));
+                                              } else {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const UserPage(),
+                                                    ));
+                                              }
+                                              email.clear();
+                                              password.clear();
+                                            } else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                        "Email ou senha errado(s)"),
+                                                    content: const Text(
+                                                        "Não foi possivel logar"),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            email.clear();
+                                                            password.clear();
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text("OK"))
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          }
+                                        },
+                                        child: const Text(
+                                          "Entrar",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18),
+                                        ),
+                                      )),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SignInButton(
+                                      Buttons.Google,
+                                      onPressed: () async {
+                                        GoogleAuthProvider googleProvider =
+                                            GoogleAuthProvider();
+                                        googleProvider.setCustomParameters(
+                                            {'login_hint': 'user@example.com'});
+
+                                        await FirebaseAuth.instance
+                                            .signInWithPopup(googleProvider);
+
+                                        if (FirebaseAuth.instance.currentUser !=
+                                            null) {
+                                          final user =
+                                              FirebaseAuth.instance.currentUser;
+
+                                          final db = FirebaseFirestore.instance;
+
+                                          final docRef = db
+                                              .collection("users")
+                                              .doc(user!.uid)
+                                              .collection("infos");
+
+                                          docRef.get().then((doc) => {
+                                                if (doc.docs.isEmpty)
+                                                  {
+                                                    DatabaseController
+                                                        .createUser(
+                                                            user.displayName
+                                                                .toString(),
+                                                            user.email
+                                                                .toString(),
+                                                            false)
+                                                  }
+                                              });
+
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                const UserPage(),
+                                          ));
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            esqueceuASenha = !esqueceuASenha;
+                                          });
+                                        },
+                                        child: const Text(
+                                          "Esqueceu a senha?",
+                                          style: TextStyle(color: Colors.blue),
+                                        )),
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.grey[300],
+                                          minimumSize: const Size(200, 60),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const RegisterPage(),
+                                              ));
+                                        },
+                                        child: const Text(
+                                          "Cadastrar",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18),
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: 500,
+                              child: TextFormField(
+                                controller: emailConfirmacao,
+                                decoration: const InputDecoration(
+                                  labelStyle: TextStyle(color: Colors.black),
+                                  border: OutlineInputBorder(),
+                                  hintText: "Email de recuperação",
+                                  labelText: "Email de recuperação",
+                                  prefixIcon: Icon(Icons.mail),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[300],
+                                  minimumSize: const Size(200, 60),
+                                ),
+                                onPressed: () async {
+                                  try {
+                                    await FirebaseAuth.instance
+                                        .sendPasswordResetEmail(
+                                            email: emailConfirmacao.text);
+                                  } catch (e) {
+                                    SnackBar(content: Text(e.toString()));
+                                  }
+
+                                  emailConfirmacao.clear();
+                                  setState(() {
+                                    esqueceuASenha = !esqueceuASenha;
+                                  });
+                                },
+                                child: const Text(
+                                  "Enviar",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 18),
+                                ),
+                              )),
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[300],
+                                  minimumSize: const Size(200, 60),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    esqueceuASenha = !esqueceuASenha;
+                                  });
+                                },
+                                child: const Text(
+                                  "Voltar",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 18),
+                                ),
+                              )),
+                        ],
+                      ),
+              ],
+            ),
+          ),
         ),
       ),
     );
