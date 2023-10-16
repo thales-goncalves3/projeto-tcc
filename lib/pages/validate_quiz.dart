@@ -1,10 +1,12 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
+import 'package:projeto_tcc/controllers/auth_controller.dart';
 import 'package:projeto_tcc/pages/partner_page.dart';
+import 'package:projeto_tcc/providers/change_page_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ValidateQuiz extends StatefulWidget {
@@ -17,6 +19,7 @@ class ValidateQuiz extends StatefulWidget {
 class _ValidateQuizState extends State<ValidateQuiz> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
+  late String resultText;
   QRViewController? controller;
 
   @override
@@ -37,9 +40,9 @@ class _ValidateQuizState extends State<ValidateQuiz> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Quiz Validado",
-                    style: TextStyle(
+                  Text(
+                    resultText,
+                    style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
@@ -47,9 +50,10 @@ class _ValidateQuizState extends State<ValidateQuiz> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const PartnerPage(),
-                      ));
+                      final navigationProvider =
+                          Provider.of<ChangePageProvider>(context,
+                              listen: false);
+                      navigationProvider.navigateToPage(AppPage.PartnerPage);
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -89,18 +93,32 @@ class _ValidateQuizState extends State<ValidateQuiz> {
     controller.scannedDataStream.listen((scanData) async {
       if (scanData.code != null) {
         try {
-          final DatabaseReference databaseReference = FirebaseDatabase.instance
+          final DataSnapshot databaseReference = await FirebaseDatabase.instance
               .ref()
               .child("qrcodes")
-              .child(scanData.code.toString());
+              .child(scanData.code.toString())
+              .get();
 
-          print("=>>>>>>>>>> ${scanData.code}");
+          if (databaseReference.exists) {
+            final data = databaseReference.value as Map<dynamic, dynamic>;
 
-          await databaseReference.update({"validate": true});
-
-          setState(() {
-            result = scanData;
-          });
+            if (data['data']['creatorUserId'] == AuthController.getUserId()) {
+              FirebaseDatabase.instance
+                  .ref()
+                  .child("qrcodes")
+                  .child(scanData.code.toString())
+                  .update({"validate": true});
+              setState(() {
+                result = scanData;
+                resultText = "Quiz validado com sucesso.";
+              });
+            } else {
+              setState(() {
+                result = scanData;
+                resultText = "Parceiro não autorizado";
+              });
+            }
+          }
         } catch (e) {
           print('Erro ao acessar os valores: $e');
         }

@@ -11,7 +11,7 @@ class Routes {
       case "/register_page":
         return MaterialPageRoute(builder: (_) => const RegisterPage());
       case "/user_page":
-        return MaterialPageRoute(builder: (_) => const UserPage());
+        return MaterialPageRoute(builder: (_) => UserPage());
       default:
         return MaterialPageRoute(builder: (_) => const LoginPage());
     }

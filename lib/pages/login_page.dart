@@ -3,13 +3,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_button/flutter_animated_button.dart';
+
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
 import 'package:projeto_tcc/controllers/database_controller.dart';
+import 'package:projeto_tcc/pages/main_page.dart';
 import 'package:projeto_tcc/pages/partner_page.dart';
 import 'package:projeto_tcc/pages/register_page.dart';
 import 'package:projeto_tcc/pages/user_page.dart';
+import 'package:projeto_tcc/providers/change_page_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -44,9 +47,10 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Center(
                   child: Image.asset(
-                    "lib/assets/desconto-icon-preto.png",
-                    width: 100,
-                    height: 100,
+                    "lib/assets/desconto.png",
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 const Padding(
@@ -142,15 +146,26 @@ class _LoginPageState extends State<LoginPage> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          const PartnerPage(),
+                                                          const MainPage(
+                                                        isPartner: true,
+                                                      ),
                                                     ));
                                               } else {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          const UserPage(),
+                                                          const MainPage(
+                                                              isPartner: false),
                                                     ));
+                                                final navigationProvider =
+                                                    Provider.of<
+                                                            ChangePageProvider>(
+                                                        context,
+                                                        listen: false);
+                                                navigationProvider
+                                                    .navigateToPage(
+                                                        AppPage.UserPage);
                                               }
                                               email.clear();
                                               password.clear();
@@ -159,10 +174,22 @@ class _LoginPageState extends State<LoginPage> {
                                                 context: context,
                                                 builder: (context) {
                                                   return AlertDialog(
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    icon: const Icon(
+                                                      Icons.error,
+                                                      color: Colors.red,
+                                                    ),
                                                     title: const Text(
-                                                        "Email ou senha errado(s)"),
+                                                      "Email ou senha errado(s)",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
                                                     content: const Text(
-                                                        "Não foi possivel logar"),
+                                                      "Não foi possivel logar",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
                                                     actions: [
                                                       TextButton(
                                                           onPressed: () {
@@ -172,8 +199,12 @@ class _LoginPageState extends State<LoginPage> {
                                                                     context)
                                                                 .pop();
                                                           },
-                                                          child:
-                                                              const Text("OK"))
+                                                          child: const Text(
+                                                            "OK",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ))
                                                     ],
                                                   );
                                                 },
@@ -226,11 +257,19 @@ class _LoginPageState extends State<LoginPage> {
                                                   }
                                               });
 
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                            builder: (context) =>
-                                                const UserPage(),
-                                          ));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const MainPage(
+                                                        isPartner: false),
+                                              ));
+                                          final navigationProvider =
+                                              Provider.of<ChangePageProvider>(
+                                                  context,
+                                                  listen: false);
+                                          navigationProvider
+                                              .navigateToPage(AppPage.UserPage);
                                         }
                                       },
                                     ),

@@ -67,6 +67,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Esse campo é obrigatório";
+                              }
+
+                              return null;
+                            },
                             controller: username,
                             decoration: const InputDecoration(
                               labelStyle: TextStyle(color: Colors.black),
@@ -214,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               const Text(
                                 "Quero ser parceiro",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w400,
                                     fontSize: 16,
                                     color: Colors.black),
                               )
@@ -245,16 +252,85 @@ class _RegisterPageState extends State<RegisterPage> {
                                             checkboxValue);
 
                                         // ignore: use_build_context_synchronously
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content:
-                                                    Text("Usuário Criado")));
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              backgroundColor: Colors.black,
+                                              icon: const Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                              ),
+                                              title: const Text(
+                                                "Usuário criado",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              content: const Text(
+                                                "Usuário criado com sucesso",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      email.clear();
+                                                      password.clear();
+                                                      username.clear();
+                                                      passwordConfirm.clear();
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                const LoginPage(),
+                                                          ));
+                                                    },
+                                                    child: const Text(
+                                                      "OK",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ))
+                                              ],
+                                            );
+                                          },
+                                        );
                                       } else {
                                         // ignore: use_build_context_synchronously
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content:
-                                                    Text(result.toString())));
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              backgroundColor: Colors.black,
+                                              icon: const Icon(
+                                                Icons.error,
+                                                color: Colors.red,
+                                              ),
+                                              title: const Text(
+                                                "O Email já está sendo utilizado por outra conta.",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      email.clear();
+                                                      password.clear();
+                                                      username.clear();
+                                                      passwordConfirm.clear();
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text(
+                                                      "OK",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ))
+                                              ],
+                                            );
+                                          },
+                                        );
                                       }
                                     }
                                   },
@@ -280,7 +356,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                         ));
                                   },
                                   child: const Text(
-                                    "Voltar para o Login",
+                                    "Login",
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 18),
                                   ),

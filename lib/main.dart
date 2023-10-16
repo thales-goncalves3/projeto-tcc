@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:projeto_tcc/pages/user_provider.dart';
+import 'package:projeto_tcc/providers/change_page_provider.dart';
+import 'package:projeto_tcc/providers/color_provider.dart';
+import 'package:projeto_tcc/providers/user_provider.dart';
 
 import 'package:projeto_tcc/routes/routes.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +20,12 @@ void main() async {
     providers: [
       ChangeNotifierProvider(
         create: (context) => UserProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => ColorProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => ChangePageProvider(),
       )
     ],
     child: const MyApp(),
@@ -29,18 +37,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ColorScheme colorScheme = const ColorScheme(
-      primary: Color(0xFF723172), // Cor primária
-      secondary: Colors.green, // Cor secundária
-      surface: Colors.white, // Cor da superfície
-      background: Color(0xFF723172), // Cor de fundo
-      error: Colors.red, // Cor de erro
-      onPrimary: Colors.white, // Cor do texto sobre a cor primária
-      onSecondary: Colors.black, // Cor do texto sobre a cor secundária
-      onSurface: Colors.black, // Cor do texto sobre a cor de superfície
-      onBackground: Colors.black, // Cor do texto sobre a cor de fundo
-      onError: Colors.white, // Cor do texto sobre a cor de erro
-      brightness: Brightness.light, // Brilho (claro ou escuro)
+    ColorScheme colorScheme = ColorScheme(
+      primary: Provider.of<ColorProvider>(context).mainColor,
+      secondary: Colors.green,
+      surface: Colors.grey[300]!,
+      background: Provider.of<ColorProvider>(context).mainColor,
+      error: Colors.red,
+      onPrimary: Colors.white,
+      onSecondary: Colors.black,
+      onSurface: Colors.black,
+      onBackground: Colors.black,
+      onError: Colors.white,
+      brightness: Brightness.light,
     );
 
     return MaterialApp(

@@ -1,12 +1,15 @@
 // ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
 import 'package:projeto_tcc/pages/partner_page.dart';
+import 'package:projeto_tcc/providers/change_page_provider.dart';
+import 'package:projeto_tcc/providers/color_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateQuizPage extends StatefulWidget {
@@ -238,10 +241,7 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                   )
                 : null
             : null,
-        backgroundColor: const Color(0xFF723172),
-        appBar: AppBar(
-          title: const Text('Criar Quiz'),
-        ),
+        backgroundColor: Provider.of<ColorProvider>(context).mainColor,
         body: config
             ? Center(
                 child: Container(
@@ -385,30 +385,28 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                               ),
                               const SizedBox(height: 20),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: AnimatedButton(
-                                  text: "Configurar",
-                                  animatedOn: AnimatedOn.onHover,
-                                  height: 40,
-                                  width: 200,
-                                  isReverse: true,
-                                  selectedTextColor: const Color(0xFF723172),
-                                  transitionType: TransitionType.LEFT_TO_RIGHT,
-                                  backgroundColor: const Color(0xFF723172),
-                                  borderColor: Colors.white,
-                                  borderRadius: 5,
-                                  borderWidth: 2,
-                                  onPress: () async {
-                                    setState(() {
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey[300],
+                                      minimumSize: const Size(200, 60),
+                                    ),
+                                    onPressed: () {
                                       setState(() {
-                                        if (formKey.currentState!.validate()) {
-                                          config = !config;
-                                        }
+                                        setState(() {
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            config = !config;
+                                          }
+                                        });
                                       });
-                                    });
-                                  },
-                                ),
-                              ),
+                                    },
+                                    child: const Text(
+                                      "Configurar",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 18),
+                                    ),
+                                  )),
                             ],
                           ),
                         ),
@@ -429,36 +427,36 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                           quizData.length == cont
                               ? Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: AnimatedButton(
-                                    text: "Finalizar Quiz",
-                                    animatedOn: AnimatedOn.onHover,
-                                    height: 40,
-                                    width: 200,
-                                    isReverse: true,
-                                    selectedTextColor: const Color(0xFF723172),
-                                    transitionType:
-                                        TransitionType.LEFT_TO_RIGHT,
-                                    backgroundColor: const Color(0xFF723172),
-                                    borderColor: Colors.white,
-                                    borderRadius: 5,
-                                    borderWidth: 2,
-                                    onPress: () async {
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey[300],
+                                      minimumSize: const Size(200, 60),
+                                    ),
+                                    onPressed: () {
                                       setState(() {
                                         showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title:
-                                                    const Text("Confirmação"),
+                                                title: const Text("Confirmação",
+                                                    style: TextStyle(
+                                                        color: Colors.white)),
                                                 content: const Text(
-                                                    "Deseja realmente finalizar o quiz?"),
+                                                    "Deseja realmente finalizar o quiz?",
+                                                    style: TextStyle(
+                                                        color: Colors.white)),
                                                 actions: [
                                                   TextButton(
                                                       onPressed: () async {
                                                         Navigator.of(context)
                                                             .pop();
                                                       },
-                                                      child: const Text("Não")),
+                                                      child: const Text(
+                                                        "Não",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      )),
                                                   TextButton(
                                                       onPressed: () {
                                                         FirebaseFirestore
@@ -478,22 +476,36 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                                                           'titulo': titulo.text,
                                                           'codigo': uuid.v1(),
                                                         });
+                                                        final navigationProvider =
+                                                            Provider.of<
+                                                                    ChangePageProvider>(
+                                                                context,
+                                                                listen: false);
+                                                        navigationProvider
+                                                            .navigateToPage(
+                                                                AppPage
+                                                                    .PartnerPage);
 
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  const PartnerPage(),
-                                                            ));
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
-                                                      child: const Text("Sim")),
+                                                      child: const Text(
+                                                        "Sim",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      )),
                                                 ],
                                               );
                                             });
                                       });
                                     },
-                                  ),
-                                )
+                                    child: const Text(
+                                      "Finalizar",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 18),
+                                    ),
+                                  ))
                               : Text(
                                   "Número de perguntas: ${quizData.length} / $cont",
                                   style: const TextStyle(
