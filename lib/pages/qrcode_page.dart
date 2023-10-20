@@ -271,12 +271,11 @@ class _QrCodePageState extends State<QrCodePage> {
                                           selectedOption) {
                                         colorOptions[selectedOption] =
                                             Colors.green[900]!;
-                                        print("entrou aq");
+
                                         respostasCorretas++;
                                       } else {
                                         colorOptions[selectedOption] =
                                             Colors.red[900]!;
-                                        print("n entrou aq");
                                       }
                                       enviar = !enviar;
                                     });
@@ -292,7 +291,9 @@ class _QrCodePageState extends State<QrCodePage> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF191970),
+                                    backgroundColor:
+                                        Provider.of<ColorProvider>(context)
+                                            .mainColor,
                                     minimumSize: const Size(200, 60),
                                   ),
                                   onPressed: () async {
@@ -301,7 +302,7 @@ class _QrCodePageState extends State<QrCodePage> {
                                           userInfos['perguntas'].length - 1) {
                                         countPergunta++;
                                         colorOptions[selectedOption] =
-                                            Colors.grey[200]!;
+                                            Colors.white;
                                         selectedOption = -1;
                                         enviar = false;
                                       } else {
@@ -388,6 +389,7 @@ class _QrCodePageState extends State<QrCodePage> {
                                                       });
 
                                                       final navigationProvider =
+                                                          // ignore: use_build_context_synchronously
                                                           Provider.of<
                                                                   ChangePageProvider>(
                                                               context,
@@ -396,6 +398,7 @@ class _QrCodePageState extends State<QrCodePage> {
                                                           .navigateToPage(
                                                               AppPage.UserPage);
 
+                                                      // ignore: use_build_context_synchronously
                                                       Navigator.of(context)
                                                           .pop();
                                                     } catch (e) {

@@ -150,7 +150,7 @@ class _MainPageState extends State<MainPage> {
                     navigationProvider.navigateToPage(AppPage.FinishedQuizzes);
                   },
                 ),
-                const SizedBox(height: 200.0),
+                const SizedBox(height: 50.0),
                 ListTile(
                   leading: const Icon(Icons.exit_to_app),
                   title: const Text("Sair"),
@@ -212,17 +212,16 @@ class _MainPageState extends State<MainPage> {
         ),
         appBar: AppBar(
           iconTheme: IconThemeData(
-            color: Provider.of<ColorProvider>(context).textColor,
+            color: Colors.white,
           ),
-          backgroundColor: Provider.of<ColorProvider>(context).appBarColor,
-          title: Text(
+          backgroundColor: Provider.of<ColorProvider>(context).mainColor,
+          title: const Text(
             "Quiz Barganha",
-            style:
-                TextStyle(color: Provider.of<ColorProvider>(context).textColor),
+            style: TextStyle(color: Colors.white),
           ),
           actions: [
             Switch(
-              activeTrackColor: Provider.of<ColorProvider>(context).mainColor,
+              activeTrackColor: Provider.of<ColorProvider>(context).appBarColor,
               thumbIcon: thumbIcon,
               value: colorProvider.light,
               onChanged: (bool value) {

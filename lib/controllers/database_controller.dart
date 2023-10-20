@@ -83,7 +83,7 @@ class DatabaseController {
       'username': username,
       'email': email,
       'partner': partner,
-      'urlPhoto': '',
+      'urlPhoto': "https://cdn-icons-png.flaticon.com/512/17/17004.png",
       'description': 'ainda não tem uma descrição',
       'uuid': AuthController.getUserId(),
       'score': 0

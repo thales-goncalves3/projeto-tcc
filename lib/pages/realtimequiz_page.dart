@@ -1,9 +1,6 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
-import 'package:projeto_tcc/providers/color_provider.dart';
-import 'package:provider/provider.dart';
 
 class RealtimeQuiz extends StatefulWidget {
   const RealtimeQuiz({super.key});
@@ -47,10 +44,13 @@ class _RealtimeQuizState extends State<RealtimeQuiz> {
               ? SizedBox(
                   width: MediaQuery.of(context).size.width * 1,
                   height: MediaQuery.of(context).size.height * 1,
-                  child: const Center(
-                    child: Text(
-                      "Ainda não há quizzes sendo realizados",
-                      style: TextStyle(color: Colors.white, fontSize: 30),
+                  child: const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(
+                      child: Text(
+                        "Ainda não há quizzes sendo realizados",
+                        style: TextStyle(color: Colors.white, fontSize: 30),
+                      ),
                     ),
                   ),
                 )

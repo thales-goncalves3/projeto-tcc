@@ -46,52 +46,49 @@ class _FinishedQuizzesState extends State<FinishedQuizzes> {
           children: [
             ...qrcodesList.map(
               (item) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    color: Colors.grey[300],
-                    child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BoldFirstText(
-                                label: "Quiz:", text: item['data']['titulo']),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            BoldFirstText(
-                                label: "Valor do produto:",
-                                text: "R\$${item['data']['valorProduto']}"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            BoldFirstText(
-                                label: "Valor do desconto:",
-                                text: "${item['data']['desconto']}%"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            BoldFirstText(
-                                label: "Usuário:",
-                                text: item['userData']['username']),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            BoldFirstText(
-                                label: "Pontuação do usuário:",
-                                text: item['userData']['score'].toString()),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        )),
+                return Card(
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
+                  color: Colors.grey[300],
+                  child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BoldFirstText(
+                              label: "Quiz:", text: item['data']['titulo']),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          BoldFirstText(
+                              label: "Valor do produto:",
+                              text: "R\$${item['data']['valorProduto']}"),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          BoldFirstText(
+                              label: "Valor do desconto:",
+                              text: "${item['data']['desconto']}%"),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          BoldFirstText(
+                              label: "Usuário:",
+                              text: item['userData']['username']),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          BoldFirstText(
+                              label: "Pontuação do usuário:",
+                              text: item['userData']['score'].toString()),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                        ],
+                      )),
                 );
               },
             ).toList()

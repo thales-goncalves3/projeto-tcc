@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
+import 'package:projeto_tcc/widgets/customtext_widget.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -41,73 +42,42 @@ class _HistoryPageState extends State<HistoryPage> {
           itemCount: data.length,
           itemBuilder: (context, index) {
             final quiz = data[index]['quiz'];
+            var count = 0;
 
-            return Card(
-              margin: const EdgeInsets.all(20),
-              child: ListTile(
-                title: Text(
-                  quiz['titulo'].toString(),
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                subtitle: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: quiz['perguntas'].map<Widget>((pergunta) {
-                          final opcaoCorreta = pergunta['correta'] + 1;
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Questão: ${pergunta['questao']}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Correta: Opção ',
-                                  style: DefaultTextStyle.of(context).style,
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: '$opcaoCorreta',
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                            ],
-                          );
-                        }).toList(),
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                elevation: 4, // Adicione sombreamento ao card
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(16),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      BoldFirstText(
+                        label: 'Título do Quiz:',
+                        text: quiz['titulo'].toString(),
                       ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Valor do produto: R\$ ${quiz['valorProduto']}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                        Text(
-                          'Desconto: R\$ ${quiz['desconto']}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                        Text(
-                          'Pontuação: ${data[index]['score'].toString()} pontos',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ...quiz['perguntas'].map<Widget>((pergunta) {
+                        count++;
+                        return BoldFirstText(
+                          label: 'Questão ${count}:',
+                          text: pergunta['questao'],
+                        );
+                      }).toList(),
+                      BoldFirstText(
+                        label: 'Valor do produto:',
+                        text: 'R\$ ${quiz['valorProduto']}',
+                      ),
+                      BoldFirstText(
+                        label: 'Desconto:',
+                        text: 'R\$ ${quiz['desconto']}',
+                      ),
+                      BoldFirstText(
+                        label: 'Pontuação:',
+                        text: '${data[index]['score'].toString()} pontos',
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

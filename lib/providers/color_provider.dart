@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorProvider with ChangeNotifier {
-  var mainColor = const Color(0xFF191970);
+  var mainColor = Color.fromARGB(255, 10, 92, 122);
   var appBarColor = Colors.grey[300];
   var textColor = Colors.black;
   var light = true;
@@ -10,7 +10,7 @@ class ColorProvider with ChangeNotifier {
     light = !light;
 
     if (light) {
-      mainColor = const Color(0xFF191970);
+      mainColor = const Color(0xFF308FB1);
       appBarColor = Colors.grey[300];
       textColor = Colors.black;
     } else {

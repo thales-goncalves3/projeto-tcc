@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:projeto_tcc/controllers/auth_controller.dart';
-import 'package:projeto_tcc/providers/color_provider.dart';
-import 'package:provider/provider.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -14,6 +14,8 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  String? selectedFile;
+
   Stream<DocumentSnapshot> getUser() {
     Stream<DocumentSnapshot> userStream = FirebaseFirestore.instance
         .collection("users")
@@ -99,16 +101,6 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       const Divider(),
                       ListTile(
-                        title: const Text("Email: "),
-                        subtitle: Text(dadosDoUser['email']),
-                        leading: const Icon(Icons.email),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.edit),
-                        ),
-                      ),
-                      const Divider(),
-                      ListTile(
                         title: const Text("Descrição:"),
                         subtitle: alterarDescricao
                             ? TextFormField(
@@ -151,25 +143,73 @@ class _EditProfileState extends State<EditProfile> {
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.2,
                             height: MediaQuery.of(context).size.height * 0.2,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.grey[300]!,
-                                width: 2.0,
-                              ),
                             ),
-                            child: ClipOval(
-                              child: Image.network(
-                                dadosDoUser['urlPhoto'] ??
-                                    "https://cdn-icons-png.flaticon.com/512/17/17004.png",
-                                fit: BoxFit.cover,
-                              ),
+                            child: Image.network(
+                              dadosDoUser['urlPhoto'] ??
+                                  "https://cdn-icons-png.flaticon.com/512/17/17004.png",
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
                         trailing: IconButton(
                           onPressed: () async {
-                            // Adicione aqui a lógica para alterar a foto
+                            try {
+                              FilePickerResult? fileResult =
+                                  await FilePicker.platform.pickFiles(
+                                      allowMultiple: false,
+                                      type: FileType.image);
+
+                              if (fileResult != null) {
+                                var fileBytes = fileResult.files.first.bytes;
+                                var fileName = fileResult.files.first.name;
+
+                                await FirebaseStorage.instance
+                                    .ref(
+                                        'usersPhotos/${AuthController.getUserId()}')
+                                    .putData(
+                                        fileBytes!,
+                                        SettableMetadata(
+                                            contentType: 'image/jpeg'));
+
+                                var photo = await FirebaseStorage.instance
+                                    .ref(
+                                        'usersPhotos/${AuthController.getUserId()}')
+                                    .getDownloadURL();
+
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(AuthController.getUserId())
+                                    .update({'urlPhoto': photo});
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+
+                            // final html.FileUploadInputElement input =
+                            //     html.FileUploadInputElement()
+                            //       ..accept = 'image/*';
+                            // input.click();
+
+                            // input.onChange.listen((e) async {
+                            //   final html.File file = input.files!.first;
+
+                            //   final reader = html.FileReader();
+                            //   reader.readAsArrayBuffer(file);
+
+                            //   await reader.onLoad.first;
+
+                            //   final Uint8List uint8list = Uint8List.fromList(
+                            //       reader.result as List<int>);
+
+                            //   final String userId = AuthController.getUserId();
+
+                            //   final storageRef = FirebaseStorage.instance
+                            //       .ref('usersPhotos/$userId.jpg');
+
+                            //   await storageRef.putData(uint8list);
+                            // });
                           },
                           icon: const Icon(Icons.edit),
                         ),

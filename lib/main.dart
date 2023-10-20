@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto_tcc/pages/quiz_barganha_page.dart';
+import 'package:projeto_tcc/providers/aux_image_provider.dart';
 import 'package:projeto_tcc/providers/change_page_provider.dart';
 import 'package:projeto_tcc/providers/color_provider.dart';
 import 'package:projeto_tcc/providers/user_provider.dart';
@@ -26,6 +28,9 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (context) => ChangePageProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => AuxImageProvider(),
       )
     ],
     child: const MyApp(),
@@ -47,18 +52,24 @@ class MyApp extends StatelessWidget {
       onSecondary: Colors.black,
       onSurface: Colors.black,
       onBackground: Colors.black,
-      onError: Colors.white,
+      onError: Colors.red,
       brightness: Brightness.light,
     );
 
+    ThemeData meuTema = ThemeData(
+      colorScheme: colorScheme,
+      useMaterial3: true,
+      fontFamily: 'OpenSans',
+    );
+
     return MaterialApp(
-      initialRoute: Routes.initial,
+      // initialRoute: Routes.initial,
+      home: QuizBarganhaPage(),
       onGenerateRoute: Routes.generateRoute,
       navigatorKey: Routes.navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Quiz Barganha',
-      theme: ThemeData(
-          colorScheme: colorScheme, useMaterial3: true, fontFamily: 'Roboto'),
+      theme: meuTema,
     );
   }
 }
