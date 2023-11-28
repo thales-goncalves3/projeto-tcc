@@ -46,49 +46,37 @@ class _FinishedQuizzesState extends State<FinishedQuizzes> {
           children: [
             ...qrcodesList.map(
               (item) {
-                return Card(
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                return Center(
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    color: Colors.grey[300],
+                    child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: ListTile(
+                          title: Text(
+                            "Quiz: ${item['data']['titulo']}",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                  "Valor do produto: R\$${item['data']['valorProduto']}"),
+                              Text(
+                                  "Valor do desconto: ${item['data']['desconto']}%"),
+                              Text(
+                                  "Valor final: R\$ ${double.parse(item['data']['valorProduto']) - (double.parse(item['data']['valorProduto']) * (int.parse(item['data']['desconto']) / 100))}"),
+                              Text("Usuário: ${item['userData']['username']}"),
+                              Text(
+                                  "Pontuação do usuário: ${item['userData']['score'].toString()}"),
+                            ],
+                          ),
+                        )),
                   ),
-                  color: Colors.grey[300],
-                  child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          BoldFirstText(
-                              label: "Quiz:", text: item['data']['titulo']),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          BoldFirstText(
-                              label: "Valor do produto:",
-                              text: "R\$${item['data']['valorProduto']}"),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          BoldFirstText(
-                              label: "Valor do desconto:",
-                              text: "${item['data']['desconto']}%"),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          BoldFirstText(
-                              label: "Usuário:",
-                              text: item['userData']['username']),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          BoldFirstText(
-                              label: "Pontuação do usuário:",
-                              text: item['userData']['score'].toString()),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                        ],
-                      )),
                 );
               },
             ).toList()

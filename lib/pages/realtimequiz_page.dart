@@ -37,76 +37,82 @@ class _RealtimeQuizState extends State<RealtimeQuiz> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 1,
-      child: Center(
-          child: qrcodesList.isEmpty
-              ? SizedBox(
-                  width: MediaQuery.of(context).size.width * 1,
-                  height: MediaQuery.of(context).size.height * 1,
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Center(
-                      child: Text(
-                        "Ainda não há quizzes sendo realizados",
-                        style: TextStyle(color: Colors.white, fontSize: 30),
+    return FutureBuilder(
+      future: Future.delayed(const Duration(seconds: 5)),
+      builder: (context, snapshot) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width * 1,
+          child: Center(
+              child: qrcodesList.isEmpty
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: MediaQuery.of(context).size.height * 1,
+                      child: const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Text(
+                            "Ainda não há quizzes sendo realizados",
+                            style: TextStyle(color: Colors.white, fontSize: 30),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                )
-              : Center(
-                  child: ListView(
-                    children: [
-                      ...qrcodesList.map((item) {
-                        return Center(
-                          child: Card(
-                            elevation: 4,
-                            margin: const EdgeInsets.all(10),
-                            child: ListTile(
-                              title: Text(
-                                item['data']['titulo'],
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                    )
+                  : Center(
+                      child: ListView(
+                        children: [
+                          ...qrcodesList.map((item) {
+                            return Center(
+                              child: Card(
+                                elevation: 4,
+                                margin: const EdgeInsets.all(10),
+                                child: ListTile(
+                                  title: Text(
+                                    item['data']['titulo'],
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Código: ${item['data']['codigo']}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Usuário: ${item['userData']['username']}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Email: ${item['userData']['email']}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Pontuação do usuário: ${item['userData']['score']}",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              subtitle: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Código: ${item['data']['codigo']}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Usuário: ${item['userData']['username']}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Email: ${item['userData']['email']}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Pontuação do usuário: ${item['userData']['score']}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      })
-                    ],
-                  ),
-                )),
+                            );
+                          })
+                        ],
+                      ),
+                    )),
+        );
+      },
     );
   }
 }

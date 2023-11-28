@@ -11,7 +11,8 @@ enum AppPage {
   RankPage,
   HistoryPage,
   UserPage,
-  QrCodePage
+  QrCodePage,
+  UserPerfil
 }
 
 class ChangePageProvider with ChangeNotifier {

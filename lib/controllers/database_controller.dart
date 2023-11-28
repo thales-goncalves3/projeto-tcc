@@ -33,6 +33,16 @@ class DatabaseController {
     return infos['score'] ?? 0;
   }
 
+  static moneySaved() async {
+    var infos = await getUserInfos();
+    return infos['savedMoney'] ?? 0.0;
+  }
+
+  static countQuiz() async {
+    var infos = await getUserInfos();
+    return infos['countQuiz'] ?? 0;
+  }
+
   static getUserInfos() async {
     var uuid = await AuthController.getUserId();
 

@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:projeto_tcc/controllers/auth_controller.dart';
 import 'package:projeto_tcc/controllers/database_controller.dart';
-import 'package:projeto_tcc/pages/user_page.dart';
 import 'package:projeto_tcc/providers/change_page_provider.dart';
 import 'package:projeto_tcc/providers/color_provider.dart';
 import 'package:projeto_tcc/providers/user_provider.dart';
@@ -354,6 +354,21 @@ class _QrCodePageState extends State<QrCodePage> {
                                                           await DatabaseController
                                                               .getScore();
 
+                                                      final savedMoney =
+                                                          await DatabaseController
+                                                              .moneySaved();
+
+                                                      final countQuiz =
+                                                          DatabaseController
+                                                              .countQuiz();
+
+                                                      final saved = double
+                                                              .parse(userInfos[
+                                                                  'valorProduto']) *
+                                                          (int.parse(userInfos[
+                                                                  'desconto']) /
+                                                              100);
+
                                                       await FirebaseFirestore
                                                           .instance
                                                           .collection("users")
@@ -361,7 +376,11 @@ class _QrCodePageState extends State<QrCodePage> {
                                                               .getUserId())
                                                           .update({
                                                         'score': scoreFirebase +
-                                                            newScore
+                                                            newScore,
+                                                        'savedMoney':
+                                                            savedMoney + saved,
+                                                        'countQuiz':
+                                                            countQuiz + 1
                                                       });
 
                                                       final databaseReference =
@@ -378,6 +397,14 @@ class _QrCodePageState extends State<QrCodePage> {
                                                           .child("finished")
                                                           .set(true);
 
+                                                      DateTime dataAtual =
+                                                          DateTime.now();
+                                                      String dataFormatada =
+                                                          DateFormat(
+                                                                  'dd/MM/yyyy')
+                                                              .format(
+                                                                  dataAtual);
+
                                                       FirebaseFirestore.instance
                                                           .collection("history")
                                                           .doc()
@@ -386,6 +413,7 @@ class _QrCodePageState extends State<QrCodePage> {
                                                             .getUserId(),
                                                         'quiz': userInfos,
                                                         'score': scoreFirebase,
+                                                        'date': dataFormatada
                                                       });
 
                                                       final navigationProvider =

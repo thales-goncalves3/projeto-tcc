@@ -6,6 +6,7 @@ import 'package:projeto_tcc/pages/history_page.dart';
 import 'package:projeto_tcc/pages/qrcode_page.dart';
 import 'package:projeto_tcc/pages/rank_page.dart';
 import 'package:projeto_tcc/pages/user_page.dart';
+import 'package:projeto_tcc/pages/user_perfil_page.dart';
 import 'package:provider/provider.dart';
 
 import 'package:projeto_tcc/controllers/auth_controller.dart';
@@ -175,6 +176,15 @@ class _MainPageState extends State<MainPage> {
                   },
                 ),
                 ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text("Perfil"),
+                  onTap: () {
+                    final navigationProvider =
+                        Provider.of<ChangePageProvider>(context, listen: false);
+                    navigationProvider.navigateToPage(AppPage.UserPerfil);
+                  },
+                ),
+                ListTile(
                   leading: const Icon(Icons.leaderboard),
                   title: const Text("Ranking"),
                   onTap: () {
@@ -258,6 +268,9 @@ class _MainPageState extends State<MainPage> {
                   switch (navigationProvider.currentPage) {
                     case AppPage.RankPage:
                       return const RankPage();
+
+                    case AppPage.UserPerfil:
+                      return const UserPerfil();
                     case AppPage.HistoryPage:
                       return const HistoryPage();
                     case AppPage.QrCodePage:

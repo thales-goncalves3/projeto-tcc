@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_tcc/pages/quiz_barganha_page.dart';
 import 'package:projeto_tcc/providers/aux_image_provider.dart';
 import 'package:projeto_tcc/providers/change_page_provider.dart';
@@ -57,14 +58,12 @@ class MyApp extends StatelessWidget {
     );
 
     ThemeData meuTema = ThemeData(
-      colorScheme: colorScheme,
-      useMaterial3: true,
-      fontFamily: 'OpenSans',
-    );
+        colorScheme: colorScheme,
+        useMaterial3: true,
+        textTheme: GoogleFonts.robotoTextTheme());
 
     return MaterialApp(
-      // initialRoute: Routes.initial,
-      home: QuizBarganhaPage(),
+      home: const QuizBarganhaPage(),
       onGenerateRoute: Routes.generateRoute,
       navigatorKey: Routes.navigatorKey,
       debugShowCheckedModeBanner: false,

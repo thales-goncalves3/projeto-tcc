@@ -73,7 +73,6 @@ class _UserPageState extends State<UserPage> {
                 return Card(
                   elevation: 4.0,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -88,25 +87,33 @@ class _UserPageState extends State<UserPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CircleAvatar(
-                                    backgroundImage: userData[index]
-                                        ['urlPhoto'],
-                                    child: const CircularProgressIndicator(),
-                                  )),
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage:
+                                      NetworkImage(userData[index]['urlPhoto']),
+                                ),
+                              ),
                               Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      userData[index]['username'],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userData[index]['username'],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(userData[index]['description']),
-                                  ],
+                                      Text(
+                                        userData[index]['description'],
+                                        softWrap: true,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -166,7 +173,7 @@ class _UserPageState extends State<UserPage> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                "Desconto a ser aplicado: R\$ ${item['desconto']}",
+                                                "Desconto a ser aplicado: ${item['desconto']}%",
                                                 style: const TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.white,

@@ -45,39 +45,35 @@ class _HistoryPageState extends State<HistoryPage> {
             var count = 0;
 
             return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                elevation: 4, // Adicione sombreamento ao card
-                child: ListTile(
-                  contentPadding: EdgeInsets.all(16),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      BoldFirstText(
-                        label: 'Título do Quiz:',
-                        text: quiz['titulo'].toString(),
-                      ),
-                      ...quiz['perguntas'].map<Widget>((pergunta) {
-                        count++;
-                        return BoldFirstText(
-                          label: 'Questão ${count}:',
-                          text: pergunta['questao'],
-                        );
-                      }).toList(),
-                      BoldFirstText(
-                        label: 'Valor do produto:',
-                        text: 'R\$ ${quiz['valorProduto']}',
-                      ),
-                      BoldFirstText(
-                        label: 'Desconto:',
-                        text: 'R\$ ${quiz['desconto']}',
-                      ),
-                      BoldFirstText(
-                        label: 'Pontuação:',
-                        text: '${data[index]['score'].toString()} pontos',
-                      ),
-                    ],
-                  ),
+              padding: const EdgeInsets.all(4.0),
+              child: SizedBox(
+                child: Card(
+                  elevation: 8,
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        title: Text(
+                          'Título do Quiz: ${quiz['titulo'].toString()}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            ...quiz['perguntas'].map<Widget>((pergunta) {
+                              count++;
+                              return Text(
+                                  "Questão $count: ${pergunta['questao']}");
+                            }).toList(),
+                            Text(
+                                'Valor do produto: R\$ ${quiz['valorProduto']}'),
+                            Text('Desconto: ${quiz['desconto']}%'),
+                            Text(
+                                'Pontuação: ${data[index]['score'].toString()} pontos'),
+                            Text('Data da realização: ${data[index]['date']}')
+                          ],
+                        ),
+                      )),
                 ),
               ),
             );

@@ -8,25 +8,25 @@ class BoldFirstText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: "$label ",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: MediaQuery.of(context).size.width * 0.02,
-            ),
+    return Row(
+      children: [
+        Text(
+          "$label ",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: MediaQuery.of(context).size.width * 0.02,
+            color: Colors.black,
           ),
-          TextSpan(
-            text: text,
-            style: TextStyle(
-              fontWeight: FontWeight.normal,
-              fontSize: MediaQuery.of(context).size.width * 0.02,
-            ),
+        ),
+        Text(
+          text,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+            fontSize: MediaQuery.of(context).size.width * 0.02,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

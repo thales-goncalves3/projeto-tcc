@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -458,7 +459,7 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                                                                 Colors.white),
                                                       )),
                                                   TextButton(
-                                                      onPressed: () {
+                                                      onPressed: () async {
                                                         FirebaseFirestore
                                                             .instance
                                                             .collection(
@@ -476,6 +477,16 @@ class _CreateQuizPageState extends State<CreateQuizPage> {
                                                           'titulo': titulo.text,
                                                           'codigo': uuid.v1(),
                                                         });
+
+                                                        final fcmToken =
+                                                            await FirebaseMessaging
+                                                                .instance
+                                                                .getToken(
+                                                                    vapidKey:
+                                                                        "K48TZYpreNyViApZQHw31PXrWHr2WAgZHyuDnMdZ08U");
+
+                                                        print(fcmToken);
+
                                                         final navigationProvider =
                                                             Provider.of<
                                                                     ChangePageProvider>(
